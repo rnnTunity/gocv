@@ -10,6 +10,20 @@ import (
 	"unsafe"
 )
 
+func FindHomography(capture_kps []KeyPoint,
+	capture_descs Mat,
+	stream_kps []KeyPoint,
+	stream_descs Mat) (m Mat) {
+	KeyPoints_a := toKeyPoints(capture_kps)
+	KeyPoints_b := toKeyPoints(stream_kps)
+	ret := C.find_homography_a(KeyPoints_a, capture_descs.p, KeyPoints_b, stream_descs.p)
+	return Mat{p: ret}
+}
+
+func EqualizeHist(src, dst Mat) {
+	C.equalizeHist(src.p, dst.p)
+}
+
 // AKAZE is a wrapper around the cv::AKAZE algorithm.
 type AKAZE struct {
 	// C.AKAZE
@@ -384,4 +398,25 @@ func getKeyPoints(ret C.KeyPoints) []KeyPoint {
 			int(r.octave), int(r.classID)}
 	}
 	return keys
+}
+
+func toKeyPoints(points []KeyPoint) C.KeyPoints {
+
+	cPointSlice := make([]C.KeyPoint, len(points))
+	for i, point := range points {
+		cPointSlice[i] = C.KeyPoint{
+			x:        C.double(point.X),
+			y:        C.double(point.Y),
+			size:     C.double(point.Size),
+			angle:    C.double(point.Angle),
+			response: C.double(point.Response),
+			octave:   C.int(point.Octave),
+			classID:  C.int(point.ClassID),
+		}
+	}
+
+	return C.KeyPoints{
+		keypoints: (*C.KeyPoint)(&cPointSlice[0]),
+		length:    C.int(len(points)),
+	}
 }

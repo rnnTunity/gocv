@@ -30,6 +30,9 @@ typedef void* ORB;
 typedef void* SimpleBlobDetector;
 #endif
 
+Mat find_homography_a( KeyPoints keypointsF1, Mat features_a, KeyPoints keypointsF2, Mat features_b );
+void equalizeHist(Mat src, Mat des);
+
 AKAZE AKAZE_Create();
 void AKAZE_Close(AKAZE a);
 struct KeyPoints AKAZE_Detect(AKAZE a, Mat src);

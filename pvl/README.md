@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"image/color"
 
-	"gocv.io/x/gocv"
+	"github.com/rnnTunity/gocv"
 	"gocv.io/x/gocv/pvl"
 )
 

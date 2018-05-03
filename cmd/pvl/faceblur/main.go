@@ -19,7 +19,7 @@ import (
 	"os"
 	"strconv"
 
-	"gocv.io/x/gocv"
+	"github.com/rnnTunity/gocv"
 	"gocv.io/x/gocv/pvl"
 )
 

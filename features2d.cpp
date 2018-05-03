@@ -1,8 +1,96 @@
 #include "features2d.h"
 
+
+void matches2points_nndr(const std::vector<cv::KeyPoint>& train,
+                         const std::vector<cv::KeyPoint>& query,
+                         const std::vector<std::vector<cv::DMatch> >& matches,
+                         float nndr,
+                         std::vector<cv::Point2f>& capture_points,
+     					 std::vector<cv::Point2f>& stream_points) {
+
+  float dist1 = 0.0, dist2 = 0.0;
+  for (size_t i = 0; i < matches.size(); i++) {
+    cv::DMatch dmatch = matches[i][0];
+    dist1 = matches[i][0].distance;
+    dist2 = matches[i][1].distance;
+
+    if (dist1 < nndr*dist2) {
+      capture_points.push_back(train[dmatch.queryIdx].pt);
+      stream_points.push_back(query[dmatch.trainIdx].pt);
+    }
+  }
+}
+
+
+int match_features( cv::Mat const& f1, cv::Mat const& f2,
+                    std::vector<cv::KeyPoint>& keypointsF1,
+                    std::vector<cv::KeyPoint>& keypointsF2,
+					std::vector<cv::Point2f>& capture_points,
+					std::vector<cv::Point2f>& stream_points)
+{
+	if (f1.size().area() > 0 && f2.size().area() > 0)
+	{
+        std::vector<std::vector<cv::DMatch> > dmatches;
+        cv::Ptr<cv::DescriptorMatcher> matcher_l1 = cv::DescriptorMatcher::create("BruteForce-Hamming");
+
+        matcher_l1->knnMatch(f1, f2, dmatches, 2);
+        matches2points_nndr(keypointsF1, keypointsF2, dmatches, 0.8f, capture_points, stream_points);
+	} else {
+		return -1;
+	}
+    if (capture_points.size() == 0 || (capture_points.size() != stream_points.size()) ) {
+        return  -1;
+    }
+	return 0;
+}
+
+Mat find_homography_a( KeyPoints keypointsF1, Mat features_a, KeyPoints keypointsF2, Mat features_b ){
+
+std::vector<cv::KeyPoint> kp1;
+std::vector<cv::KeyPoint> kp2;
+
+int i;
+for (i=0; i<keypointsF1.length; i++) {
+    KeyPoint kp =  keypointsF1.keypoints[i];
+    cv::KeyPoint k = cv::KeyPoint(kp.x, kp.y, kp.size, kp.angle, kp.response, kp.octave, kp.classID);
+    kp1.push_back(k);
+}
+
+for (i=0; i<keypointsF2.length; i++) {
+    KeyPoint kp =  keypointsF2.keypoints[i];
+    cv::KeyPoint k = cv::KeyPoint(kp.x, kp.y, kp.size, kp.angle, kp.response, kp.octave, kp.classID);
+    kp2.push_back(k);
+}
+
+std::vector<cv::Point2f> capture_points, stream_points;
+std::vector<std::vector<cv::DMatch> > dmatches;
+
+int match_result = match_features(*features_a, *features_b, kp1, kp2,
+        capture_points, stream_points);
+
+if (match_result == 0)
+{
+    cv::Mat res = cv::estimateRigidTransform(stream_points, stream_points, false);
+
+    if (res.empty())
+     return NULL;
+
+    cv::Mat* resPtr = new cv::Mat();
+    res.copyTo(*resPtr);
+    return resPtr;
+}
+else
+    return NULL;//&cv::Mat();
+}
+/////////////////////
+void equalizeHist(Mat src, Mat des) {
+    cv::equalizeHist(*src, *des);
+}
+
 AKAZE AKAZE_Create() {
     // TODO: params
-    return new cv::Ptr<cv::AKAZE>(cv::AKAZE::create());
+
+    return new cv::Ptr<cv::AKAZE>(cv::AKAZE::create(5, 0, 3, 0.001, 1, 1, 1));
 }
 
 void AKAZE_Close(AKAZE a) {

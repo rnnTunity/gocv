@@ -15,7 +15,7 @@ import (
 	"image"
 	"image/color"
 
-	"gocv.io/x/gocv"
+	"github.com/rnnTunity/gocv"
 )
 
 var w = 400

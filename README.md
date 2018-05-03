@@ -25,7 +25,7 @@ This example opens a video capture device using device "0", reads frames, and sh
 package main
 
 import (
-	"gocv.io/x/gocv"
+	"github.com/rnnTunity/gocv"
 )
 
 func main() {
@@ -54,7 +54,7 @@ import (
 	"fmt"
 	"image/color"
 
-	"gocv.io/x/gocv"
+	"github.com/rnnTunity/gocv"
 )
 
 func main() {

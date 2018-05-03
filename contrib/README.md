@@ -16,7 +16,7 @@ First, you must include the `contrib` subpackage:
 
 ```go
 import (
-    "gocv.io/x/gocv"
+    "github.com/rnnTunity/gocv"
     "gocv.io/x/gocv/contrib"
 )
 ```
