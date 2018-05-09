@@ -70,7 +70,7 @@ int match_result = match_features(*features_a, *features_b, kp1, kp2,
 
 if (match_result == 0)
 {
-    cv::Mat res = cv::estimateRigidTransform(stream_points, stream_points, false);
+    cv::Mat res = cv::estimateRigidTransform(capture_points, stream_points, true);
 
     if (res.empty())
      return NULL;
