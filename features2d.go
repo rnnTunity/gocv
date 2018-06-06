@@ -24,6 +24,14 @@ func EqualizeHist(src, dst Mat) {
 	C.equalizeHist(src.p, dst.p)
 }
 
+func CreateAndDetectLineSegmentDetector(src Mat) []LineSegment {
+
+	ret := C.createAndDetectLineSegmentDetector(src.p)
+	defer C.Lines_Close(ret)
+
+	return getKeyLines(ret)
+}
+
 // AKAZE is a wrapper around the cv::AKAZE algorithm.
 type AKAZE struct {
 	// C.AKAZE
@@ -380,6 +388,24 @@ func (b *SimpleBlobDetector) Detect(src Mat) []KeyPoint {
 	defer C.KeyPoints_Close(ret)
 
 	return getKeyPoints(ret)
+}
+
+func getKeyLines(ret C.Lines) []LineSegment {
+
+	cArray := ret.line
+	length := int(ret.length)
+	hdr := reflect.SliceHeader{
+		Data: uintptr(unsafe.Pointer(cArray)),
+		Len:  length,
+		Cap:  length,
+	}
+	s := *(*[]C.LineSegment)(unsafe.Pointer(&hdr))
+
+	keys := make([]LineSegment, length)
+	for i, r := range s {
+		keys[i] = LineSegment{float64(r.x1), float64(r.y1), float64(r.x2), float64(r.y2)}
+	}
+	return keys
 }
 
 func getKeyPoints(ret C.KeyPoints) []KeyPoint {

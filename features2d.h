@@ -32,6 +32,7 @@ typedef void* SimpleBlobDetector;
 
 Mat find_homography_a( KeyPoints keypointsF1, Mat features_a, KeyPoints keypointsF2, Mat features_b );
 void equalizeHist(Mat src, Mat des);
+struct Lines createAndDetectLineSegmentDetector(Mat src);
 
 AKAZE AKAZE_Create();
 void AKAZE_Close(AKAZE a);

@@ -1077,6 +1077,10 @@ type KeyPoint struct {
 	Octave, ClassID       int
 }
 
+type LineSegment struct {
+	X1, X2, Y1, Y2 float64
+}
+
 // Vecf is a generic vector of floats.
 type Vecf []float32
 

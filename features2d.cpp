@@ -86,6 +86,26 @@ else
 void equalizeHist(Mat src, Mat des) {
     cv::equalizeHist(*src, *des);
 }
+/////////////////////
+
+struct Lines createAndDetectLineSegmentDetector(Mat src) {
+  cv::Ptr<cv::LineSegmentDetector> ls = cv::createLineSegmentDetector();
+  std::vector<cv::Vec4f> lines_std;
+    // Detect the lines
+    ls->detect(*src, lines_std);
+
+    LineSegment* line = new LineSegment[lines_std.size()];
+
+    for (size_t i = 0; i < lines_std.size(); ++i) {
+        LineSegment k = {lines_std[i][0], lines_std[i][1], lines_std[i][2], lines_std[i][3]};
+        line[i] = k;
+    }
+
+    Lines ret = {line, (int)lines_std.size()};
+    return ret;
+}
+
+/////////////////////
 
 AKAZE AKAZE_Create() {
     // TODO: params

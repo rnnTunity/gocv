@@ -462,6 +462,10 @@ void KeyPoints_Close(struct KeyPoints ks) {
     delete[] ks.keypoints;
 }
 
+void Lines_Close(struct Lines ks) {
+    delete[] ks.line;
+}
+
 void Points_Close(Points ps) {
     for (size_t i = 0; i < ps.length; i++) {
         Point_Close(ps.points[i]);

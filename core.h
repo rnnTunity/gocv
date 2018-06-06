@@ -97,6 +97,20 @@ typedef struct KeyPoints {
     int length;
 } KeyPoints;
 
+// Wrapper for a individual cv::KeyPoint
+typedef struct LineSegment {
+    double x1;
+    double y1;
+    double x2;
+    double y2;
+} LineSegment;
+
+// Wrapper for the vector of KeyPoint struct aka std::vector<KeyPoint>
+typedef struct Lines {
+    LineSegment* line;
+    int length;
+} Lines;
+
 // Wrapper for an individual cv::Moment
 typedef struct Moment {
     double m00;
@@ -148,6 +162,7 @@ void ByteArray_Release(struct ByteArray buf);
 
 void Contours_Close(struct Contours cs);
 void KeyPoints_Close(struct KeyPoints ks);
+void Lines_Close(struct Lines ks);
 void Rects_Close(struct Rects rs);
 void Mats_Close(struct Mats mats);
 void Point_Close(struct Point p);
