@@ -53,6 +53,16 @@ HOGDescriptor HOGDescriptor_New() {
     return new cv::HOGDescriptor();
 }
 
+HOGDescriptor HOGDescriptor_NewWithParams() {
+  return new cv::HOGDescriptor(cv::Size(3,3), cv::Size(3,3),
+	               cv::Size(3,3), cv::Size(3,3), 8);
+}
+void compute(HOGDescriptor hog, Mat img) {
+  std::vector<float> descriptors_a;
+  	hog->compute(*img, descriptors_a);
+}
+
+
 void HOGDescriptor_Close(HOGDescriptor hog) {
     delete hog;
 }

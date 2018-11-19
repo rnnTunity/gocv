@@ -17,11 +17,17 @@ func FindHomography(capture_kps []KeyPoint,
 	KeyPoints_a := toKeyPoints(capture_kps)
 	KeyPoints_b := toKeyPoints(stream_kps)
 	ret := C.find_homography_a(KeyPoints_a, capture_descs.p, KeyPoints_b, stream_descs.p)
+
 	return Mat{p: ret}
 }
 
 func EqualizeHist(src, dst Mat) {
 	C.equalizeHist(src.p, dst.p)
+}
+
+func CorrectCLAHE(img Mat) (m Mat) {
+	ret := C.correctCLAHE(img.p)
+	return Mat{p: ret}
 }
 
 func CreateAndDetectLineSegmentDetector(src Mat) []LineSegment {
@@ -410,6 +416,7 @@ func getKeyLines(ret C.Lines) []LineSegment {
 
 func getKeyPoints(ret C.KeyPoints) []KeyPoint {
 	cArray := ret.keypoints
+	//defer C.free(unsafe.Pointer(cArray))
 	length := int(ret.length)
 	hdr := reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(cArray)),

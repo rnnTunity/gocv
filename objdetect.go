@@ -102,6 +102,17 @@ func (h *HOGDescriptor) Close() error {
 	return nil
 }
 
+// NewHOGDescriptor returns a new HOGDescriptor.
+func NewHOGDescriptorWithParams() HOGDescriptor {
+	return HOGDescriptor{p: C.HOGDescriptor_New()}
+}
+
+func (h *HOGDescriptor) Compute(img Mat) []float64 {
+
+	return nil
+
+}
+
 // DetectMultiScale detects objects in the input Mat image.
 // The detected objects are returned as a slice of image.Rectangle structs.
 //

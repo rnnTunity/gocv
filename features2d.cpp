@@ -6,7 +6,7 @@ void matches2points_nndr(const std::vector<cv::KeyPoint>& train,
                          const std::vector<std::vector<cv::DMatch> >& matches,
                          float nndr,
                          std::vector<cv::Point2f>& capture_points,
-     					 std::vector<cv::Point2f>& stream_points) {
+     					           std::vector<cv::Point2f>& stream_points) {
 
   float dist1 = 0.0, dist2 = 0.0;
   for (size_t i = 0; i < matches.size(); i++) {
@@ -25,8 +25,8 @@ void matches2points_nndr(const std::vector<cv::KeyPoint>& train,
 int match_features( cv::Mat const& f1, cv::Mat const& f2,
                     std::vector<cv::KeyPoint>& keypointsF1,
                     std::vector<cv::KeyPoint>& keypointsF2,
-					std::vector<cv::Point2f>& capture_points,
-					std::vector<cv::Point2f>& stream_points)
+					          std::vector<cv::Point2f>& capture_points,
+					          std::vector<cv::Point2f>& stream_points)
 {
 	if (f1.size().area() > 0 && f2.size().area() > 0)
 	{
@@ -87,6 +87,31 @@ void equalizeHist(Mat src, Mat des) {
     cv::equalizeHist(*src, *des);
 }
 /////////////////////
+
+
+Mat correctCLAHE(Mat img)
+{
+  cv::Mat* resPtr = new cv::Mat();
+  img->copyTo(*resPtr);
+
+	cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE();
+	clahe->setClipLimit(4);
+	clahe->setTilesGridSize(cv::Size(16,16));
+
+	//cv::cvtColor(img, img, COLOR_BGR2Lab);
+	std::vector<cv::Mat> chans;
+	cv::split(*resPtr, chans);
+	clahe->apply(chans[0], chans[0]);
+	clahe->apply(chans[1], chans[1]);
+	clahe->apply(chans[2], chans[2]);
+	cv::merge(chans, *resPtr);
+	//cvtColor(img, img, COLOR_Lab2BGR);
+	//return img;
+  return resPtr;
+}
+
+/////////////////////
+
 
 struct Lines createAndDetectLineSegmentDetector(Mat src) {
   cv::Ptr<cv::LineSegmentDetector> ls = cv::createLineSegmentDetector();
